@@ -1,0 +1,3 @@
+captured_at,sku_id,site,available,inbound,reserved
+2026-09-08T08:00:00Z,SKU-LOW,US,4,0,1
+2026-09-08T08:00:00Z,SKU-HEALTHY,US,120,30,5

@@ -58,7 +58,7 @@ const systemItems: NavItem[] = [
   },
   {
     key: 'main-agent',
-    label: '主 Miniclaw',
+    label: '主 TradePilot',
     icon: <Bot className="size-4" />,
   },
   {
@@ -90,7 +90,7 @@ const managementItems: NavItem[] = [
 
 const aboutItem: NavItem = {
   key: 'about',
-  label: '关于 Miniclaw',
+  label: '关于 TradePilot',
   icon: <Info className="size-4" />,
 };
 

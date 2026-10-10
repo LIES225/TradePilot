@@ -43,13 +43,13 @@ export function ProviderConnectionFields({
         )}
         <p className="text-xs leading-5 text-muted-foreground">
           {provider === 'wechat'
-            ? '扫码结果由 Miniclaw 安全保存，无需填写 Token、Bot ID 或服务地址。'
-            : '账号和会话密钥由 Miniclaw 管理，无需填写手机号或账号标识。'}
+            ? '扫码结果由 TradePilot 安全保存，无需填写 Token、Bot ID 或服务地址。'
+            : '账号和会话密钥由 TradePilot 管理，无需填写手机号或账号标识。'}
         </p>
         {provider === 'wechat' && showOptions && (
           <OptionSwitch
             id={`${idPrefix}-bypass-proxy`}
-            label="绕过 Miniclaw HTTP 代理"
+            label="绕过 TradePilot HTTP 代理"
             description="开启后不使用 HTTP(S)_PROXY；Clash TUN、VPN 等系统级网络仍可能接管流量。"
             checked={(values.bypassProxy ?? 'true') !== 'false'}
             disabled={disabled}

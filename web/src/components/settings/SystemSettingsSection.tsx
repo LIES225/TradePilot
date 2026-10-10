@@ -607,7 +607,7 @@ export function HostIntegrationSettingsSection({
       );
       toast.success(
         scope === 'main-agent'
-          ? '主 Miniclaw 默认策略已保存'
+          ? '主 TradePilot 默认策略已保存'
           : draft.pluginAutoScan !== settings.pluginAutoScan
             ? '宿主机集成设置已保存；Plugin 自动扫描将在服务重启后生效'
             : '宿主机集成设置已保存',
@@ -636,15 +636,15 @@ export function HostIntegrationSettingsSection({
             <div className="flex min-h-16 items-start justify-between gap-6">
               <div className="min-w-0">
                 <Label htmlFor="host-integration-main-agent-context">
-                  主 Miniclaw 继承宿主机 Claude Code 配置
+                  主 TradePilot 继承宿主机 Claude Code 配置
                 </Label>
                 <p
                   id="host-integration-main-agent-context-description"
                   className="mt-1 text-xs leading-5 text-muted-foreground"
                 >
                   开启后自动继承宿主机提示词、Rules、全部 Skills 与 MCP，
-                  无需再逐项选择；Miniclaw 管理的能力继续附加。普通用户的 默认
-                  Miniclaw 始终使用托管配置。
+                  无需再逐项选择；TradePilot 管理的能力继续附加。普通用户的默认
+                  TradePilot 始终使用托管配置。
                 </p>
               </div>
               <Switch
@@ -676,7 +676,7 @@ export function HostIntegrationSettingsSection({
                     id="main-agent-auto-compact-default-description"
                     className="mt-1 text-xs leading-5 text-muted-foreground"
                   >
-                    全局作用于所有用户的默认 Miniclaw。Pi 运行时在上下文接近窗口
+                    全局作用于所有用户的默认 TradePilot。Pi 运行时在上下文接近窗口
                     上限时自动压缩；百分比与固定阈值仅作为历史兼容配置保留，
                     实际压缩时机由运行时决定。
                   </p>

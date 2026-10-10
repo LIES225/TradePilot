@@ -400,7 +400,7 @@ export function CreateContainerDialog({
                     智能体上下文
                   </div>
                   <div className="mt-1 text-sm font-medium text-foreground">
-                    {inheritsHostClaude ? '继承 ~/.claude' : 'Miniclaw 管理'}
+                    {inheritsHostClaude ? '继承 ~/.claude' : 'TradePilot 管理'}
                   </div>
                 </div>
                 <div className="min-w-0">
@@ -418,8 +418,8 @@ export function CreateContainerDialog({
                 {canHostExec
                   ? inheritsHostClaude
                     ? `运行位置只决定命令在哪里执行。该智能体会将完整 ~/.claude 作为用户配置层叠加，工作区仍是 cwd；宿主机 Skills：${hostSkillsMode === 'inherit' ? '全部使用' : hostSkillsMode === 'custom' ? `选择 ${selectedProfile?.runtime_policy.skills.host?.ids.length ?? 0} 项` : '不使用'}。`
-                    : '运行位置只决定命令在哪里执行。该智能体使用 Miniclaw 管理的上下文与附加能力。'
-                  : '工作区固定在 Docker 容器中运行，并使用 Miniclaw 管理的智能体上下文与附加能力。'}
+                    : '运行位置只决定命令在哪里执行。该智能体使用 TradePilot 管理的上下文与附加能力。'
+                  : '工作区固定在 Docker 容器中运行，并使用 TradePilot 管理的智能体上下文与附加能力。'}
               </p>
             </div>
           )}
@@ -659,7 +659,7 @@ export function CreateContainerDialog({
                       }}
                       inputId="workspace-custom-cwd"
                       label="宿主机工作目录（可选）"
-                      description="智能体将直接在 Miniclaw 服务器上的这个目录中运行。"
+                      description="智能体将直接在 TradePilot 服务器上的这个目录中运行。"
                       placeholder="默认: data/groups/{folder}/"
                     />
                     <div className="flex items-start gap-2 p-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">

@@ -10,7 +10,7 @@ interface LogoLoadingProps {
 }
 
 /**
- * Animated loading screen with the Miniclaw logo.
+ * Animated loading screen with the TradePilot logo.
  * - `full` mode: shows the complete animated wordmark SVG via <object> so currentColor inherits from CSS
  * - default: shows the icon with a subtle pulse animation
  */
@@ -21,7 +21,7 @@ export function LogoLoading({ full, size = 64, label }: LogoLoadingProps) {
         <object
           data={`${APP_BASE}icons/loading-logo.svg`}
           type="image/svg+xml"
-          aria-label="Miniclaw"
+          aria-label="TradePilot"
           className="w-[min(80vw,500px)] h-auto"
           style={{ color: 'var(--foreground)' }}
         />
@@ -34,7 +34,7 @@ export function LogoLoading({ full, size = 64, label }: LogoLoadingProps) {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
       <img
         src={`${APP_BASE}icons/icon-192.png`}
-        alt="Miniclaw"
+        alt="TradePilot"
         className="animate-pulse rounded-2xl"
         style={{ width: size, height: size }}
       />

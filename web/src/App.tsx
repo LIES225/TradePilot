@@ -43,6 +43,9 @@ if (
 const TasksPage = lazy(() =>
   import('./pages/TasksPage').then((m) => ({ default: m.TasksPage })),
 );
+const TradePilotPage = lazy(() =>
+  import('./pages/TradePilotPage').then((m) => ({ default: m.TradePilotPage })),
+);
 const SettingsPage = lazy(() =>
   import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })),
 );
@@ -165,6 +168,14 @@ const appRoutes = createRoutesFromElements(
         element={
           <Suspense fallback={null}>
             <TasksPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/tradepilot"
+        element={
+          <Suspense fallback={null}>
+            <TradePilotPage />
           </Suspense>
         }
       />

@@ -40,6 +40,7 @@ export interface MiniclawPromptSources {
   agentIdentity?: string;
   interaction: string;
   security: string;
+  ecommerceSop?: string;
   memory?: {
     id: 'memory-system.workspace';
     text: string;
@@ -207,6 +208,18 @@ export function buildMiniclawPromptPlan(
       text: wrap('security', sources.security),
     },
   );
+
+  if (sources.ecommerceSop !== undefined) {
+    inputs.push({
+      id: 'ecommerce-sop',
+      version: 1,
+      scope: 'main',
+      owner: 'platform',
+      required: true,
+      condition: 'workspace ecommerce-data tools are registered',
+      text: wrap('ecommerce-decision-sop', sources.ecommerceSop),
+    });
+  }
 
   if (sources.memory) {
     inputs.push({

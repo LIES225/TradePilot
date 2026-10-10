@@ -1,5 +1,5 @@
 import { useState, useRef, DragEvent } from 'react';
-import { Upload, FolderUp } from 'lucide-react';
+import { MonitorUp, Upload, FolderUp } from 'lucide-react';
 import { useFileStore } from '../../stores/files';
 
 interface FileUploadZoneProps {
@@ -49,6 +49,21 @@ export function FileUploadZone({ groupJid }: FileUploadZoneProps) {
       await uploadFiles(groupJid, Array.from(fileList));
       if (folderInputRef.current) folderInputRef.current.value = '';
     }
+  };
+
+  const handleDesktopFileSelect = async () => {
+    const desktop = window.miniclawDesktop;
+    if (!desktop) return;
+    const pickedFiles = await desktop.pickFiles();
+    if (pickedFiles.length === 0) return;
+    await uploadFiles(
+      groupJid,
+      pickedFiles.map((file) => {
+        const bytes = new Uint8Array(file.bytes.byteLength);
+        bytes.set(file.bytes);
+        return new File([bytes.buffer], file.name, { type: file.mimeType });
+      }),
+    );
   };
 
   const progressPercent =
@@ -117,6 +132,15 @@ export function FileUploadZone({ groupJid }: FileUploadZoneProps) {
                 <Upload className="w-3.5 h-3.5" />
                 上传文件
               </button>
+              {window.miniclawDesktop && (
+                <button
+                  onClick={() => void handleDesktopFileSelect()}
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-foreground bg-muted hover:bg-muted/80 rounded-md transition-colors cursor-pointer"
+                >
+                  <MonitorUp className="w-3.5 h-3.5" />
+                  从电脑选择
+                </button>
+              )}
               <button
                 onClick={() => folderInputRef.current?.click()}
                 className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-foreground bg-muted hover:bg-muted/80 rounded-md transition-colors cursor-pointer"

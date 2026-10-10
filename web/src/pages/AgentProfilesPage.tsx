@@ -432,7 +432,7 @@ export function AgentProfilesPage() {
 
   const managedSkillsError = useMemo(
     () =>
-      skillSelectionError(' Miniclaw Skill', {
+      skillSelectionError(' TradePilot Skill', {
         mode: skillsMode,
         ids: skillIds,
       }),
@@ -800,7 +800,7 @@ export function AgentProfilesPage() {
       setSelectedId(profile.id);
       setAllowedSearchParams({ agent: profile.id }, { replace: true });
       toast.success(
-        '已创建智能体；当前未绑定工作区，Session 与 Memory 均和 Miniclaw 隔离',
+        '已创建智能体；当前未绑定工作区，Session 与 Memory 均和 TradePilot 隔离',
       );
     } catch (err) {
       toast.error(getErrorMessage(err, '创建失败'));
@@ -1079,7 +1079,7 @@ export function AgentProfilesPage() {
       setAvatarColor(profile.avatar_color);
       setAvatarUrl(profile.avatar_url);
       setAvatarStyleOpen(false);
-      toast.success('已改为继承主 Miniclaw 头像');
+      toast.success('已改为继承主 TradePilot 头像');
     } catch (error) {
       toast.error(getErrorMessage(error, '恢复主头像失败'));
     } finally {
@@ -1096,7 +1096,7 @@ export function AgentProfilesPage() {
       (candidate) => candidate.jid === workspaceJid,
     );
     if (workspace?.is_home) {
-      toast.error('Home Workspace 固定归属内置 Miniclaw，不能迁移');
+      toast.error('Home Workspace 固定归属内置 TradePilot，不能迁移');
       return;
     }
     const target = profiles.find((profile) => profile.id === targetProfileId);
@@ -1627,7 +1627,7 @@ export function AgentProfilesPage() {
                             <p className="mt-1 text-xs leading-5 text-muted-foreground">
                               {avatarUrl || avatarEmoji || avatarColor
                                 ? '当前使用这个智能体的自定义头像。'
-                                : '未单独设置，自动继承主 Miniclaw 头像。'}
+                                : '未单独设置，自动继承主 TradePilot 头像。'}
                             </p>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -1715,7 +1715,7 @@ export function AgentProfilesPage() {
                               将 ~/.claude 作为用户配置层叠加，包含提示词、
                               Rules、Agents、Commands、Hooks、Workflows、 Output
                               Styles、Plugins 与设置（含宿主机 MCP）。工作区仍是
-                              运行目录；Miniclaw MCP 与宿主机 Skills
+                              运行目录；TradePilot MCP 与宿主机 Skills
                               继续由“能力配置”独立控制。
                             </div>
                           </div>
@@ -1739,7 +1739,7 @@ export function AgentProfilesPage() {
                         <h2 className="text-sm font-semibold">宿主机配置</h2>
                         <p className="mt-1 text-xs leading-5 text-muted-foreground">
                           决定是否将管理员的 ~/.claude 作为完整用户配置层叠加；
-                          工作区仍是运行目录。宿主机 MCP 随配置加载，Miniclaw
+                          工作区仍是运行目录。宿主机 MCP 随配置加载，TradePilot
                           MCP 与宿主机 Skills 在“能力配置”中独立设置。
                         </p>
                       </div>
@@ -1756,7 +1756,7 @@ export function AgentProfilesPage() {
                           className={`rounded-lg border p-4 text-left ${contextSource === 'managed' ? 'border-primary bg-primary/5' : 'hover:bg-muted'}`}
                         >
                           <span className="block text-sm font-medium">
-                            Miniclaw 托管
+                            TradePilot 托管
                           </span>
                           <span className="mt-1 block text-xs leading-5 text-muted-foreground">
                             不加载宿主机原生配置。Skills 与 MCP
@@ -1777,7 +1777,7 @@ export function AgentProfilesPage() {
                           <span className="mt-1 block text-xs leading-5 text-muted-foreground">
                             加载设置、提示词、Rules、Agents、Commands、Hooks、
                             Workflows、Output Styles、Plugins 与宿主机 MCP；
-                            Miniclaw MCP 和宿主机 Skills 仍由下一步单独控制。
+                            TradePilot MCP 和宿主机 Skills 仍由下一步单独控制。
                           </span>
                         </button>
                       </div>
@@ -1878,7 +1878,7 @@ export function AgentProfilesPage() {
                           }
                         />
                         <SummaryItem
-                          label="Miniclaw Skills"
+                          label="TradePilot Skills"
                           value={
                             skillsMode === 'inherit'
                               ? '全部已启用'
@@ -1895,7 +1895,7 @@ export function AgentProfilesPage() {
                           )}
                         />
                         <SummaryItem
-                          label="Miniclaw MCP"
+                          label="TradePilot MCP"
                           value={
                             mcpMode === 'inherit'
                               ? '全部已启用'
@@ -1935,7 +1935,7 @@ export function AgentProfilesPage() {
                       </h2>
                       <p className="mt-1 text-xs leading-5 text-muted-foreground">
                         按来源配置
-                        Skills。Miniclaw、宿主机与工作区能力会在运行时叠加；
+                        Skills。TradePilot、宿主机与工作区能力会在运行时叠加；
                         同名项以“最终生效能力”中的结果为准。
                       </p>
                     </div>
@@ -1966,10 +1966,10 @@ export function AgentProfilesPage() {
                       <section className="min-w-0 space-y-2 border-t border-border pt-5">
                         <div>
                           <h3 className="text-sm font-semibold text-foreground">
-                            Miniclaw MCP
+                            TradePilot MCP
                           </h3>
                           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                            控制 Miniclaw 额外附加的 MCP；宿主机 MCP
+                            控制 TradePilot 额外附加的 MCP；宿主机 MCP
                             仍由上一步的宿主机配置控制。
                           </p>
                         </div>
@@ -1988,25 +1988,25 @@ export function AgentProfilesPage() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="inherit">
-                                使用全部 Miniclaw MCP
+                                使用全部 TradePilot MCP
                               </SelectItem>
                               <SelectItem value="custom">
-                                只允许所选 Miniclaw MCP
+                                只允许所选 TradePilot MCP
                               </SelectItem>
                               <SelectItem value="disabled">
-                                关闭 Miniclaw MCP
+                                关闭 TradePilot MCP
                               </SelectItem>
                             </SelectContent>
                           </Select>
                           {mcpMode === 'custom' && (
                             <PolicyResourcePicker
-                              label="选择 Miniclaw MCP"
+                              label="选择 TradePilot MCP"
                               options={mcpOptions}
                               selectedIds={mcpIds}
                               onChange={setMcpIds}
                               loading={mcpLoading}
                               error={mcpError}
-                              emptyText="没有已启用的 Miniclaw MCP"
+                              emptyText="没有已启用的 TradePilot MCP"
                             />
                           )}
                         </div>

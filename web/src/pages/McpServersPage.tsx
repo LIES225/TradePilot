@@ -162,7 +162,7 @@ export function McpServersPage() {
         </div>
 
         <div className="mx-6 mt-4 rounded-lg border border-warning/20 bg-warning-bg px-4 py-3 text-xs leading-5 text-warning">
-          这里管理 Miniclaw 额外提供的 MCP，再由各智能体决定是否允许使用。
+          这里管理 TradePilot 额外提供的 MCP，再由各智能体决定是否允许使用。
           继承宿主机 ~/.claude 的智能体会自动获得宿主机全部
           MCP，无需导入或勾选。 密钥写入后不会再次显示；STDIO 命令会在智能体
           的实际运行环境中执行。

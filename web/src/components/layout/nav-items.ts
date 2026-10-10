@@ -6,6 +6,7 @@ import {
   BarChart3,
   Wallet,
   Settings,
+  ClipboardCheck,
 } from 'lucide-react';
 
 interface NavItem {
@@ -21,6 +22,7 @@ export const baseNavItems: NavItem[] = [
   { path: '/agent-profiles', icon: Bot, label: '智能体' },
   { path: '/capabilities', icon: Puzzle, label: '能力库' },
   { path: '/tasks', icon: Clock4, label: '任务' },
+  { path: '/tradepilot', icon: ClipboardCheck, label: '经营审批', hideOnMobile: true },
   { path: '/usage', icon: BarChart3, label: '用量', hideOnMobile: true },
   { path: '/billing', icon: Wallet, label: '账单', requiresBilling: true },
   { path: '/settings', icon: Settings, label: '设置' },

@@ -96,6 +96,10 @@ import {
   reconcileLegacyOwnerProfileMemory,
 } from './owner-profile-store.js';
 import { splitLegacyEmbeddedReferenceContent } from './message-prompt.js';
+import {
+  bindEcommerceApprovalDatabase,
+  createEcommerceApprovalSchema,
+} from './ecommerce-approval-store.js';
 
 let db: InstanceType<typeof Database>;
 /**
@@ -103,7 +107,7 @@ let db: InstanceType<typeof Database>;
  * restating the number. Hardcoding it meant every schema bump edited a dozen
  * unrelated test files, which is churn that hides real assertion changes.
  */
-export const CURRENT_SCHEMA_VERSION = 69;
+export const CURRENT_SCHEMA_VERSION = 71;
 
 export function isDatabaseInitialized(): boolean {
   return Boolean(db?.open);
@@ -875,6 +879,8 @@ export function initDatabase(): void {
   // installed.
   createOwnerProfileSchema(db);
   bindOwnerProfileDatabase(db);
+  createEcommerceApprovalSchema(db);
+  bindEcommerceApprovalDatabase(db);
   if (
     rawSchemaVersionBeforeInit !== null &&
     Number(rawSchemaVersionBeforeInit) < 66
@@ -14492,6 +14498,7 @@ export function closeDatabase(): void {
   bindChannelReliabilityDatabase(null);
   bindWorkspaceMemoryDatabase(null);
   bindOwnerProfileDatabase(null);
+  bindEcommerceApprovalDatabase(null);
   if (db) {
     db.close();
   }

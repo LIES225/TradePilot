@@ -1,0 +1,3 @@
+sku_id,site,currency,unit_cost,fulfillment_cost,platform_fee_rate
+SKU-LOW,US,USD,9,3,0.15
+SKU-HEALTHY,US,USD,8,2,0.15

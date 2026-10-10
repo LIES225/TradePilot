@@ -2,7 +2,7 @@ import type { Skill } from '../stores/skills';
 
 export const SKILL_SOURCE_LABELS: Record<Skill['source'], string> = {
   user: '我的 Skills',
-  project: 'Miniclaw 内置',
+  project: 'TradePilot 内置',
   external: '宿主机',
 };
 

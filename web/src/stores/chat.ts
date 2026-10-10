@@ -2833,7 +2833,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         if (typeof document === 'undefined' || !document.hidden) {
           showToast(`${desc} ${status}`, event.taskSummary);
         }
-        notifyIfHidden(`Miniclaw: ${desc} ${status}`, event.taskSummary);
+        notifyIfHidden(`TradePilot: ${desc} ${status}`, event.taskSummary);
       }
 
       set((s) => {

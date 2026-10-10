@@ -73,7 +73,7 @@ export function AppearanceSection() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground bg-muted rounded-lg px-4 py-3">
-        系统品牌只影响站点标题和欢迎文案，不会改变 Miniclaw 或自定义智能体
+        系统品牌只影响站点标题和欢迎文案，不会改变 TradePilot 或自定义智能体
         的名称。
       </p>
 
@@ -95,7 +95,7 @@ export function AppearanceSection() {
             value={appName}
             onChange={(e) => setAppName(e.target.value)}
             maxLength={32}
-            placeholder="Miniclaw"
+            placeholder="TradePilot"
           />
         </div>
       </Section>

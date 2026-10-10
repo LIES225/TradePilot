@@ -13,7 +13,7 @@ const envWithLegacyAlias = (
 export const ASSISTANT_NAME = envWithLegacyAlias(
   'MINICLAW_ASSISTANT_NAME',
   'ASSISTANT_NAME',
-  'Miniclaw',
+  'TradePilot',
 );
 export const POLL_INTERVAL = 2000;
 export const SCHEDULER_POLL_INTERVAL = 60000;

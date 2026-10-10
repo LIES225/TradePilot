@@ -75,7 +75,7 @@ export const CHANNEL_PROVIDER_OPTIONS: ChannelProviderOption[] = [
         url: 'https://open.feishu.cn/app',
       },
       nextStep:
-        '发布后在飞书里给 Bot 发起私聊，Miniclaw 会自动识别账号 Owner。',
+        '发布后在飞书里给 Bot 发起私聊，TradePilot 会自动识别账号 Owner。',
     },
     supportsTest: true,
     supportsPairing: false,
@@ -164,8 +164,8 @@ export const CHANNEL_PROVIDER_OPTIONS: ChannelProviderOption[] = [
       title: '创建后使用微信扫码',
       steps: [
         '填写账号名称，并在下一步选择默认工作区。',
-        '点击“创建并扫码”，Miniclaw 会生成微信登录二维码。',
-        '用手机微信扫码确认；如微信要求验证码，直接在 Miniclaw 中输入。',
+        '点击“创建并扫码”，TradePilot 会生成微信登录二维码。',
+        '用手机微信扫码确认；如微信要求验证码，直接在 TradePilot 中输入。',
       ],
       nextStep:
         '扫码授权只建立渠道账号；连接后还需要生成配对码，授权具体微信会话。',
@@ -251,7 +251,7 @@ export const CHANNEL_PROVIDER_OPTIONS: ChannelProviderOption[] = [
       title: '创建后关联 WhatsApp 设备',
       steps: [
         '填写账号名称，并在下一步选择默认工作区。',
-        '点击“创建并扫码”，等待 Miniclaw 生成关联设备二维码。',
+        '点击“创建并扫码”，等待 TradePilot 生成关联设备二维码。',
         '在手机 WhatsApp 中打开“已关联设备”（iOS 在设置中，Android 在右上角菜单中），点击“关联设备”扫码。',
       ],
       nextStep:

@@ -155,7 +155,7 @@ export function MainAgentCapabilitiesSection() {
   const persistedHostPolicy = profile
     ? getHostSkillPolicy(profile.runtime_policy)
     : null;
-  const managedSkillsError = skillSelectionError(' Miniclaw Skill', {
+  const managedSkillsError = skillSelectionError(' TradePilot Skill', {
     mode: skillsMode,
     ids: skillIds,
   });
@@ -225,7 +225,7 @@ export function MainAgentCapabilitiesSection() {
         } satisfies Partial<AgentProfileRuntimePolicy>,
       });
       await loadProfiles();
-      toast.success('主 Miniclaw 模型、推理档位与能力已保存');
+      toast.success('主 TradePilot 模型、推理档位与能力已保存');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '保存能力失败');
     } finally {
@@ -244,7 +244,7 @@ export function MainAgentCapabilitiesSection() {
   if (!profile) {
     return (
       <div className="border-b border-border py-6 text-sm text-destructive">
-        无法读取当前管理员的主 Miniclaw 配置。
+        无法读取当前管理员的主 TradePilot 配置。
       </div>
     );
   }
@@ -256,7 +256,7 @@ export function MainAgentCapabilitiesSection() {
           模型与系统附加能力
         </h3>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          为主智能体选择完整模型网关环境，并按来源控制 Skills 与 Miniclaw 附加的
+          为主智能体选择完整模型网关环境，并按来源控制 Skills 与 TradePilot 附加的
           MCP。宿主机 Skills 可独立于宿主机 Prompt 与 Rules 启用。
         </p>
       </div>
@@ -266,7 +266,7 @@ export function MainAgentCapabilitiesSection() {
           模型配置
         </label>
         <Select value={modelConfigId} onValueChange={setModelConfigId}>
-          <SelectTrigger aria-label="主 Miniclaw 模型配置">
+          <SelectTrigger aria-label="主 TradePilot 模型配置">
             <SelectValue placeholder="选择模型配置" />
           </SelectTrigger>
           <SelectContent>
@@ -299,7 +299,7 @@ export function MainAgentCapabilitiesSection() {
           value={effort}
           onValueChange={(next) => setEffort(next as AgentEffortLevel)}
         >
-          <SelectTrigger aria-label="主 Miniclaw 推理努力档位">
+          <SelectTrigger aria-label="主 TradePilot 推理努力档位">
             <SelectValue placeholder="选择推理努力档位" />
           </SelectTrigger>
           <SelectContent>
@@ -334,11 +334,11 @@ export function MainAgentCapabilitiesSection() {
 
       <div className="max-w-xl border-t border-border pt-5">
         <CapabilityPicker
-          label="Miniclaw MCP"
+          label="TradePilot MCP"
           value={mcpMode}
           onValueChange={setMcpMode}
           customLabel="只允许所选 MCP"
-          disabledLabel="关闭 Miniclaw MCP"
+          disabledLabel="关闭 TradePilot MCP"
         >
           {mcpMode === 'custom' && (
             <PolicyResourcePicker
@@ -348,7 +348,7 @@ export function MainAgentCapabilitiesSection() {
               onChange={setMcpIds}
               loading={mcpLoading}
               error={mcpError}
-              emptyText="没有已启用的 Miniclaw MCP"
+              emptyText="没有已启用的 TradePilot MCP"
             />
           )}
         </CapabilityPicker>

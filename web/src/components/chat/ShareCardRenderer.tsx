@@ -190,11 +190,11 @@ export const ShareCardRenderer = forwardRef<HTMLDivElement, ShareCardRendererPro
         >
           <img
             src="/icons/icon-192.png"
-            alt="Miniclaw"
+            alt="TradePilot"
             style={{ width: 16, height: 16, borderRadius: 3 }}
           />
           <span style={{ fontSize: 12, color: '#94a3b8' }}>
-            Miniclaw · github.com/helsome/miniclaw
+            TradePilot · 基于 helsome/miniclaw
           </span>
         </div>
       </div>

@@ -32,6 +32,7 @@ import {
 import { loadMiniclawOwnerProfileTurnContext } from './owner-profile-context.js';
 import { loadWorkspaceMemoryTurnContext } from './workspace-memory-context.js';
 import { buildMiniclawPromptPlan } from './prompt-plan.js';
+import { ECOMMERCE_SOP, hasEcommerceDataset } from './ecommerce-tools.js';
 import { resolveClaudeProviderRuntime } from './provider-runtime.js';
 import { resolveAgentRuntimeKind } from './runtime-config.js';
 import { adaptClaudeMcpToolsToPi } from './runtime/pi/pi-tools.js';
@@ -259,6 +260,11 @@ function buildSystemPrompt(input: ContainerInput, ctx: McpContext): string {
       : undefined,
     interaction: loadPrompt('interaction.md'),
     security: loadPrompt('security-rules.md'),
+    ecommerceSop: hasEcommerceDataset(
+      path.join(WORKSPACE_GROUP, 'ecommerce-data'),
+    )
+      ? ECOMMERCE_SOP
+      : undefined,
     memory: {
       id: 'memory-system.workspace',
       text: loadPrompt('memory-system.workspace.md'),
@@ -289,6 +295,7 @@ function buildSystemPrompt(input: ContainerInput, ctx: McpContext): string {
   for (const warning of plan.warnings) logWarn(warning);
   if (plan.errors.length)
     throw new Error(`prompt_plan_invalid: ${plan.errors.join('; ')}`);
+  ctx.promptPlanHash = plan.hash;
   return plan.text;
 }
 

@@ -74,6 +74,39 @@ describe('Miniclaw PromptPlan', () => {
     ]);
   });
 
+  test('adds a versioned ecommerce SOP only for an ecommerce workspace', () => {
+    const sources = {
+      interaction: 'interaction',
+      security: 'security',
+      output: 'output',
+    };
+    const regular = buildMiniclawPromptPlan(sources);
+    const ecommerce = buildMiniclawPromptPlan({
+      ...sources,
+      ecommerceSop: 'investigate before drafting',
+    });
+    expect(regular.blocks.some((block) => block.id === 'ecommerce-sop')).toBe(
+      false,
+    );
+    expect(ecommerce.blocks.map((block) => block.id)).toEqual([
+      'interaction',
+      'security-rules',
+      'ecommerce-sop',
+      'output',
+    ]);
+    expect(
+      ecommerce.blocks.find((block) => block.id === 'ecommerce-sop'),
+    ).toMatchObject({
+      required: true,
+      version: 1,
+      owner: 'platform',
+    });
+    expect(ecommerce.hash).not.toBe(regular.hash);
+    expect(
+      buildMiniclawPromptPlan({ ...sources, ecommerceSop: '' }).errors,
+    ).toContain('required prompt block is empty: ecommerce-sop');
+  });
+
   test('hashes are deterministic and content-sensitive', () => {
     const base = [
       {

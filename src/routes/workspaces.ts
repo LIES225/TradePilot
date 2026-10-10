@@ -1,4 +1,8 @@
 import { Hono, type Context } from 'hono';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { z } from 'zod';
 import type { Variables } from '../web-context.js';
 import {
   canAccessGroup,
@@ -7,6 +11,16 @@ import {
   isHostExecutionGroup,
 } from '../web-context.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { GROUPS_DIR } from '../config.js';
+import {
+  decideEcommerceAction,
+  getEcommerceActionReview,
+  getEcommerceManualExecution,
+  getEcommerceOutcomeReview,
+  hashEcommerceDraft,
+  recordEcommerceManualExecution,
+  recordEcommerceOutcomeReview,
+} from '../ecommerce-approval-store.js';
 import type { AuthUser, RegisteredGroup } from '../types.js';
 import {
   getAgentProfile,
@@ -29,6 +43,217 @@ import {
 } from '../owner-profile-store.js';
 
 const workspaceRoutes = new Hono<{ Variables: Variables }>();
+
+const ecommerceActionId = /^action-[0-9a-f-]{36}$/;
+const ecommerceDraftSchema = z
+  .object({
+    action_id: z.string().regex(ecommerceActionId),
+    sku_id: z.string().min(1),
+    site: z.string().min(1),
+    action_type: z.string().min(1),
+    reason: z.string().min(1),
+    evidence_trace_ids: z.array(z.string().min(1)).min(1),
+    status: z.literal('approval_required'),
+    executable: z.literal(false),
+  })
+  .passthrough();
+const ecommerceDecisionSchema = z.object({
+  decision: z.enum(['approved', 'rejected']),
+  reason: z.string().trim().min(1).max(2000),
+  draft_hash: z.string().regex(/^[0-9a-f]{64}$/),
+});
+const ecommercePolicyVersions = {
+  adjust_price: 'price-promotion-floor-v1',
+  adjust_ad_budget: 'ad-budget-profit-guard-v1',
+  replenish_inventory: 'inventory-seven-day-cover-v1',
+  pause_listing: 'listing-pause-risk-v1',
+} as const;
+const ecommerceTimestampSchema = z
+  .string()
+  .refine(
+    (value) =>
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(
+        value,
+      ) &&
+      Number.isFinite(Date.parse(value)) &&
+      Date.parse(value) <= Date.now() + 5 * 60_000,
+  );
+const ecommerceManualExecutionSchema = z.object({
+  draft_hash: z.string().regex(/^[0-9a-f]{64}$/),
+  occurred_at: ecommerceTimestampSchema,
+  external_reference: z.string().trim().min(1).max(200),
+  note: z.string().trim().min(1).max(2000),
+});
+const ecommerceOutcomeReviewSchema = z.object({
+  draft_hash: z.string().regex(/^[0-9a-f]{64}$/),
+  trace_id: z.string().regex(/^trace-[0-9a-f-]{36}$/),
+});
+
+const ecommerceDateSchema = z
+  .string()
+  .refine(
+    (value) =>
+      /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+      Number.isFinite(Date.parse(`${value}T00:00:00Z`)) &&
+      new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value,
+  );
+
+const ecommerceApprovalDraftSchema = z.object({
+  action_type: z.enum([
+    'adjust_price',
+    'adjust_ad_budget',
+    'replenish_inventory',
+    'pause_listing',
+  ]),
+  unit: z.enum([
+    'currency_per_unit',
+    'currency_per_day',
+    'units',
+    'listing_state',
+  ]),
+  currency: z
+    .string()
+    .regex(/^[A-Z]{3}$/)
+    .nullable(),
+  current_value: z.number().finite().nullable(),
+  proposed_value: z.number().finite().nullable(),
+  evidence_window: z.object({
+    start_date: ecommerceDateSchema,
+    end_date: ecommerceDateSchema,
+  }),
+  policy: z
+    .object({
+      policy_status: z.literal('allowed'),
+      policy_version: z.string(),
+    })
+    .passthrough(),
+});
+
+const ecommerceReviewResultSchema = z
+  .object({
+    status: z.literal('observed'),
+    comparison_days: z.number().int().min(1).max(366),
+    sku_id: z.string().min(1),
+    site: z.string().min(1),
+    currency: z.string().regex(/^[A-Z]{3}$/),
+    before: z.object({
+      start_date: ecommerceDateSchema,
+      end_date: ecommerceDateSchema,
+      revenue: z.number().finite(),
+      units: z.number().finite(),
+      ad_spend: z.number().finite(),
+      profit: z.number().finite(),
+    }),
+    after: z.object({
+      start_date: ecommerceDateSchema,
+      end_date: ecommerceDateSchema,
+      revenue: z.number().finite(),
+      units: z.number().finite(),
+      ad_spend: z.number().finite(),
+      profit: z.number().finite(),
+    }),
+    delta: z.object({
+      revenue: z.number().finite(),
+      units: z.number().finite(),
+      ad_spend: z.number().finite(),
+      profit: z.number().finite(),
+    }),
+  })
+  .passthrough();
+
+function currentEcommerceDatasetHash(dataDir: string): string {
+  const hash = crypto.createHash('sha256');
+  for (const filename of [
+    'products.csv',
+    'sales.csv',
+    'inventory.csv',
+    'ads.csv',
+    'promotions.csv',
+    'costs.csv',
+  ]) {
+    hash.update(filename);
+    hash.update(fs.readFileSync(path.join(dataDir, filename)));
+  }
+  return hash.digest('hex');
+}
+
+function hasMatchingEcommerceInvestigation(
+  workspaceRoot: string,
+  dataDir: string,
+  scope: {
+    sku_id: string;
+    site: string;
+    evidence_trace_ids: string[];
+    start_date: string;
+    end_date: string;
+  },
+): boolean {
+  if (scope.start_date > scope.end_date) return false;
+  try {
+    const datasetHash = currentEcommerceDatasetHash(dataDir);
+    const traceFile = path.join(dataDir, '.traces', 'tool-traces.jsonl');
+    const stat = fs.lstatSync(traceFile);
+    const realFile = fs.realpathSync(traceFile);
+    if (
+      !stat.isFile() ||
+      stat.size > 5 * 1024 * 1024 ||
+      !realFile.startsWith(`${workspaceRoot}${path.sep}`)
+    )
+      return false;
+    const traces = fs
+      .readFileSync(traceFile, 'utf8')
+      .split('\n')
+      .filter((line) => line.trim())
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    const selected = scope.evidence_trace_ids.map((id) =>
+      traces.filter((trace) => trace.trace_id === id),
+    );
+    if (selected.some((matches) => matches.length !== 1)) return false;
+    const records = selected.map((matches) => matches[0]);
+    return (
+      records.every(
+        (trace) =>
+          trace.sku_id === scope.sku_id &&
+          trace.site === scope.site &&
+          trace.start_date === scope.start_date &&
+          trace.end_date === scope.end_date &&
+          trace.dataset_hash === datasetHash,
+      ) &&
+      records.some(
+        (trace) =>
+          trace.tool === 'ecommerce_investigate_sku' &&
+          trace.status === 'ready_for_recommendation',
+      )
+    );
+  } catch {
+    return false;
+  }
+}
+
+function readEcommerceDraft(folder: string, actionId: string) {
+  if (!ecommerceActionId.test(actionId)) return null;
+  const root = path.resolve(GROUPS_DIR);
+  const workspaceRoot = path.resolve(root, folder);
+  if (!workspaceRoot.startsWith(`${root}${path.sep}`)) return null;
+  const file = path.join(
+    workspaceRoot,
+    'ecommerce-data',
+    '.actions',
+    `${actionId}.json`,
+  );
+  try {
+    const stat = fs.lstatSync(file);
+    if (!stat.isFile() || stat.size > 64 * 1024) return null;
+    const realFile = fs.realpathSync(file);
+    if (!realFile.startsWith(`${workspaceRoot}${path.sep}`)) return null;
+    const raw = fs.readFileSync(file, 'utf8');
+    const parsed = ecommerceDraftSchema.safeParse(JSON.parse(raw));
+    if (!parsed.success || parsed.data.action_id !== actionId) return null;
+    return { draft: parsed.data, hash: hashEcommerceDraft(raw) };
+  } catch {
+    return null;
+  }
+}
 
 type ResolvedWorkspaceAccess = {
   workspace: WorkspaceRecord;
@@ -339,5 +564,312 @@ workspaceRoutes.get('/:jid/channel-mounts', authMiddleware, (c) => {
     listAgentChannelMountsByWorkspace(jid).map(serializeMount);
   return c.json({ channel_mounts: channelMounts });
 });
+
+workspaceRoutes.get('/:jid/ecommerce-actions', authMiddleware, (c) => {
+  const user = c.get('user') as AuthUser;
+  const workspace = listWorkspaceRecords().find(
+    (record) => record.jid === c.req.param('jid'),
+  );
+  const access = workspace && resolveWorkspaceAccess(user, workspace);
+  if (!access) return c.json({ error: 'Workspace not found' }, 404);
+  if (!canInspectGovernance(user, access))
+    return c.json({ error: 'Forbidden' }, 403);
+
+  const actionsDir = path.join(
+    GROUPS_DIR,
+    workspace.folder,
+    'ecommerce-data',
+    '.actions',
+  );
+  let actionIds: string[];
+  try {
+    actionIds = fs
+      .readdirSync(actionsDir)
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => name.slice(0, -5))
+      .filter((id) => ecommerceActionId.test(id));
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT')
+      return c.json({ actions: [] });
+    return c.json({ error: 'Unable to read action drafts' }, 500);
+  }
+
+  const actions = actionIds.flatMap((id) => {
+    const record = readEcommerceDraft(workspace.folder, id);
+    if (!record) return [];
+    const review = getEcommerceActionReview(workspace.jid, id);
+    const manualExecution = getEcommerceManualExecution(workspace.jid, id);
+    const outcomeReview = getEcommerceOutcomeReview(workspace.jid, id);
+    return [
+      {
+        draft: record.draft,
+        draft_hash: record.hash,
+        review,
+        manual_execution: manualExecution,
+        outcome_review: outcomeReview,
+        draft_changed_after_review:
+          review !== null && review.draft_hash !== record.hash,
+      },
+    ];
+  });
+  return c.json({ actions });
+});
+
+workspaceRoutes.post(
+  '/:jid/ecommerce-actions/:actionId/decision',
+  authMiddleware,
+  async (c) => {
+    const user = c.get('user') as AuthUser;
+    const workspace = listWorkspaceRecords().find(
+      (record) => record.jid === c.req.param('jid'),
+    );
+    const access = workspace && resolveWorkspaceAccess(user, workspace);
+    if (!access) return c.json({ error: 'Workspace not found' }, 404);
+    if (!canInspectGovernance(user, access))
+      return c.json({ error: 'Forbidden' }, 403);
+
+    const body = ecommerceDecisionSchema.safeParse(
+      await c.req.json().catch(() => null),
+    );
+    if (!body.success)
+      return c.json({ error: 'Decision and reason are required' }, 400);
+    const actionId = c.req.param('actionId');
+    const record = readEcommerceDraft(workspace.folder, actionId);
+    if (!record) return c.json({ error: 'Action draft not found' }, 404);
+    if (record.hash !== body.data.draft_hash) {
+      return c.json(
+        { error: 'Action draft changed; refresh before deciding' },
+        409,
+      );
+    }
+    if (body.data.decision === 'approved') {
+      const approvalDraft = ecommerceApprovalDraftSchema.safeParse(
+        record.draft,
+      );
+      const expectedVersion = approvalDraft.success
+        ? ecommercePolicyVersions[approvalDraft.data.action_type]
+        : null;
+      if (
+        !approvalDraft.success ||
+        approvalDraft.data.policy.policy_version !== expectedVersion
+      ) {
+        return c.json(
+          { error: 'Action draft has no passing business policy' },
+          409,
+        );
+      }
+      const workspaceRoot = path.resolve(GROUPS_DIR, workspace.folder);
+      const dataDir = path.join(workspaceRoot, 'ecommerce-data');
+      if (
+        !hasMatchingEcommerceInvestigation(workspaceRoot, dataDir, {
+          sku_id: record.draft.sku_id,
+          site: record.draft.site,
+          evidence_trace_ids: record.draft.evidence_trace_ids,
+          ...approvalDraft.data.evidence_window,
+        })
+      ) {
+        return c.json({ error: 'Action evidence is missing or stale' }, 409);
+      }
+    }
+    const review = decideEcommerceAction({
+      workspaceJid: workspace.jid,
+      actionId,
+      draftHash: record.hash,
+      decision: body.data.decision,
+      reviewerUserId: user.id,
+      reason: body.data.reason,
+    });
+    if (!review) return c.json({ error: 'Action already reviewed' }, 409);
+    return c.json({ review });
+  },
+);
+
+workspaceRoutes.post(
+  '/:jid/ecommerce-actions/:actionId/manual-execution',
+  authMiddleware,
+  async (c) => {
+    const user = c.get('user') as AuthUser;
+    const workspace = listWorkspaceRecords().find(
+      (item) => item.jid === c.req.param('jid'),
+    );
+    const access = workspace && resolveWorkspaceAccess(user, workspace);
+    if (!access) return c.json({ error: 'Workspace not found' }, 404);
+    if (!canInspectGovernance(user, access))
+      return c.json({ error: 'Forbidden' }, 403);
+    const parsed = ecommerceManualExecutionSchema.safeParse(
+      await c.req.json().catch(() => null),
+    );
+    if (!parsed.success)
+      return c.json({ error: 'Invalid manual execution record' }, 400);
+    const actionId = c.req.param('actionId');
+    const record = readEcommerceDraft(workspace.folder, actionId);
+    if (!record) return c.json({ error: 'Action draft not found' }, 404);
+    if (record.hash !== parsed.data.draft_hash)
+      return c.json(
+        { error: 'Action draft changed; refresh before recording' },
+        409,
+      );
+    const approval = getEcommerceActionReview(workspace.jid, actionId);
+    if (
+      approval?.decision !== 'approved' ||
+      approval.draft_hash !== record.hash
+    )
+      return c.json({ error: 'A matching human approval is required' }, 409);
+    if (Date.parse(parsed.data.occurred_at) < Date.parse(approval.reviewed_at))
+      return c.json(
+        { error: 'Manual execution must occur after approval' },
+        409,
+      );
+    const execution = recordEcommerceManualExecution({
+      workspaceJid: workspace.jid,
+      actionId,
+      draftHash: record.hash,
+      operatorUserId: user.id,
+      occurredAt: parsed.data.occurred_at,
+      externalReference: parsed.data.external_reference,
+      note: parsed.data.note,
+    });
+    if (!execution)
+      return c.json({ error: 'Manual execution already recorded' }, 409);
+    return c.json({ manual_execution: execution });
+  },
+);
+
+workspaceRoutes.post(
+  '/:jid/ecommerce-actions/:actionId/outcome-review',
+  authMiddleware,
+  async (c) => {
+    const user = c.get('user') as AuthUser;
+    const workspace = listWorkspaceRecords().find(
+      (item) => item.jid === c.req.param('jid'),
+    );
+    const access = workspace && resolveWorkspaceAccess(user, workspace);
+    if (!access) return c.json({ error: 'Workspace not found' }, 404);
+    if (!canInspectGovernance(user, access))
+      return c.json({ error: 'Forbidden' }, 403);
+    const parsed = ecommerceOutcomeReviewSchema.safeParse(
+      await c.req.json().catch(() => null),
+    );
+    if (!parsed.success)
+      return c.json({ error: 'Invalid review Trace ID' }, 400);
+    const actionId = c.req.param('actionId');
+    const record = readEcommerceDraft(workspace.folder, actionId);
+    if (!record) return c.json({ error: 'Action draft not found' }, 404);
+    if (record.hash !== parsed.data.draft_hash)
+      return c.json(
+        { error: 'Action draft changed; refresh before reviewing' },
+        409,
+      );
+    const execution = getEcommerceManualExecution(workspace.jid, actionId);
+    if (!execution || execution.draft_hash !== record.hash)
+      return c.json(
+        { error: 'A matching manual execution record is required' },
+        409,
+      );
+    const dataDir = path.join(GROUPS_DIR, workspace.folder, 'ecommerce-data');
+    try {
+      const datasetHash = currentEcommerceDatasetHash(dataDir);
+      const traceFile = path.join(dataDir, '.traces', 'tool-traces.jsonl');
+      const stat = fs.lstatSync(traceFile);
+      const realFile = fs.realpathSync(traceFile);
+      if (
+        !stat.isFile() ||
+        stat.size > 5 * 1024 * 1024 ||
+        !realFile.startsWith(
+          `${path.resolve(GROUPS_DIR, workspace.folder)}${path.sep}`,
+        )
+      )
+        return c.json({ error: 'Review Trace is unavailable' }, 400);
+      const trace = fs
+        .readFileSync(traceFile, 'utf8')
+        .split('\n')
+        .filter(Boolean)
+        .map((line) => JSON.parse(line) as Record<string, unknown>)
+        .find((entry) => entry.trace_id === parsed.data.trace_id);
+      const result = ecommerceReviewResultSchema.safeParse(
+        trace?.review_result,
+      );
+      if (
+        !trace ||
+        trace.tool !== 'ecommerce_review_windows' ||
+        trace.dataset_hash !== datasetHash ||
+        trace.status !== 'observed' ||
+        trace.sku_id !== record.draft.sku_id ||
+        trace.site !== record.draft.site ||
+        typeof trace.created_at !== 'string' ||
+        Date.parse(trace.created_at) < Date.parse(execution.recorded_at) ||
+        !result.success ||
+        result.data.sku_id !== record.draft.sku_id ||
+        result.data.site !== record.draft.site
+      )
+        return c.json(
+          {
+            error: 'Review Trace does not match the current action and dataset',
+          },
+          409,
+        );
+      const executionDate = new Date(execution.occurred_at)
+        .toISOString()
+        .slice(0, 10);
+      if (
+        result.data.before.end_date >= executionDate ||
+        result.data.after.start_date <= executionDate
+      )
+        return c.json(
+          { error: 'Review windows must exclude the execution day' },
+          400,
+        );
+      const dayCount = (start: string, end: string) =>
+        (Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) /
+          86_400_000 +
+        1;
+      const beforeDays = dayCount(
+        result.data.before.start_date,
+        result.data.before.end_date,
+      );
+      const afterDays = dayCount(
+        result.data.after.start_date,
+        result.data.after.end_date,
+      );
+      if (
+        beforeDays !== result.data.comparison_days ||
+        afterDays !== beforeDays ||
+        beforeDays < 1 ||
+        beforeDays > 366 ||
+        (['revenue', 'units', 'ad_spend', 'profit'] as const).some(
+          (key) =>
+            Math.abs(
+              result.data.delta[key] -
+                (result.data.after[key] - result.data.before[key]),
+            ) > 1e-6,
+        )
+      )
+        return c.json(
+          { error: 'Review Trace has inconsistent windows or deltas' },
+          400,
+        );
+      if (currentEcommerceDatasetHash(dataDir) !== datasetHash)
+        return c.json({ error: 'Dataset changed during review; retry' }, 409);
+      const review = recordEcommerceOutcomeReview({
+        workspaceJid: workspace.jid,
+        actionId,
+        draftHash: record.hash,
+        reviewerUserId: user.id,
+        datasetHash,
+        result: result.data,
+      });
+      if (!review)
+        return c.json({ error: 'Outcome review already recorded' }, 409);
+      return c.json({ outcome_review: review });
+    } catch (error) {
+      if (
+        error instanceof SyntaxError ||
+        (error as NodeJS.ErrnoException).code === 'ENOENT'
+      )
+        return c.json({ error: 'Review Trace or dataset is unavailable' }, 400);
+      return c.json({ error: 'Unable to review ecommerce dataset' }, 500);
+    }
+  },
+);
 
 export default workspaceRoutes;

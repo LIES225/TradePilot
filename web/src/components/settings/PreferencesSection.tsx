@@ -67,7 +67,7 @@ const FONT_OPTIONS: {
 }[] = [
   {
     value: 'default',
-    label: 'Miniclaw',
+    label: 'TradePilot',
     sample: 'Hello 你好',
     fontFamily: "'Inter Variable', system-ui, sans-serif",
   },

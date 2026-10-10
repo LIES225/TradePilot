@@ -58,11 +58,11 @@ export function AgentSkillsPolicyEditor({
   return (
     <div className="space-y-6">
       <SkillSourceSection
-        title="Miniclaw Skills"
-        description="控制 Miniclaw 为这个智能体附加的用户级 Skills；系统内置 Skills 始终生效。"
+        title="TradePilot Skills"
+        description="控制 TradePilot 为这个智能体附加的用户级 Skills；系统内置 Skills 始终生效。"
       >
         <PolicyModeCards
-          label="Miniclaw Skills 使用方式"
+          label="TradePilot Skills 使用方式"
           value={managedPolicy.mode}
           onChange={onManagedModeChange}
           options={[
@@ -85,7 +85,7 @@ export function AgentSkillsPolicyEditor({
         />
         {managedPolicy.mode === 'custom' && (
           <PolicyResourcePicker
-            label="选择 Miniclaw Skills"
+            label="选择 TradePilot Skills"
             options={managedOptions}
             selectedIds={managedPolicy.ids}
             onChange={onManagedIdsChange}

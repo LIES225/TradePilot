@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react';
-import { ChevronRight, MoreHorizontal, RotateCcw } from 'lucide-react';
+import { Bot, ChevronRight, MoreHorizontal, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -86,31 +86,37 @@ export function AgentWorkspaceGroup({
     >
       <div
         className={cn(
-          'group flex min-h-11 w-full items-center rounded-md transition-colors hover:bg-accent/60',
-          isDirectActive && 'bg-brand-50/80 dark:bg-brand-700/15',
+          'group flex min-h-12 w-full items-center rounded-xl border border-transparent transition-[background-color,border-color] hover:border-border/70 hover:bg-accent/50',
+          isDirectActive &&
+            'border-primary/15 bg-primary/7 shadow-sm dark:bg-primary/10',
         )}
       >
         <button
           type="button"
           onClick={onSelect}
           aria-current={isDirectActive ? 'page' : undefined}
-          className="flex min-h-11 min-w-0 flex-1 items-center rounded-md px-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+          className="flex min-h-12 min-w-0 flex-1 items-center rounded-xl px-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
         >
-          <span className="flex min-w-0 flex-1 items-center gap-1.5">
-            <span className="max-w-28 shrink-0 truncate text-[14px] font-semibold leading-5 text-foreground">
-              {name}
+          <span className="flex min-w-0 flex-1 items-center gap-2">
+            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground group-hover:bg-background group-hover:text-primary">
+              <Bot className="h-3.5 w-3.5" />
             </span>
-            {!expanded && workspaceNames.length > 0 && (
-              <span className="min-w-0 truncate text-[11px] text-muted-foreground">
-                · {workspaceNames.slice(0, 2).join(' · ')}
-                {workspaceNames.length > 2
-                  ? ` +${workspaceNames.length - 2}`
-                  : ''}
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[13px] font-semibold leading-5 text-foreground">
+                {name}
               </span>
-            )}
+              {!expanded && workspaceNames.length > 0 && (
+                <span className="block truncate text-[11px] leading-4 text-muted-foreground">
+                  {workspaceNames.slice(0, 2).join(' · ')}
+                  {workspaceNames.length > 2
+                    ? ` +${workspaceNames.length - 2}`
+                    : ''}
+                </span>
+              )}
+            </span>
           </span>
           {expanded && workspaceCount > 0 && (
-            <span className="shrink-0 text-[10px] text-muted-foreground">
+            <span className="shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
               {workspaceCount}
             </span>
           )}

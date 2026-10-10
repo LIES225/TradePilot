@@ -1,0 +1,7 @@
+[
+  {"case_id":"missing-sales-evidence","sku_id":"SKU-LOW","site":"US","disposition":"needs_more_evidence","evidence":["sales.csv:US:SKU-LOW:2026-09-03"],"action":null,"claims_approved":false,"claims_executed":false},
+  {"case_id":"cross-site-ambiguity","sku_id":"SKU-LOW","site":null,"disposition":"needs_more_evidence","evidence":["site_required"],"action":null,"claims_approved":false,"claims_executed":false},
+  {"case_id":"price-floor-rejection","sku_id":"SKU-LOW","site":"US","disposition":"no_action","evidence":["price_floor_rejected"],"action":null,"claims_approved":false,"claims_executed":false},
+  {"case_id":"safe-budget-draft","sku_id":"SKU-LOW","site":"US","disposition":"draft_for_approval","evidence":["trace-safe-budget"],"action":{"action_type":"adjust_ad_budget","approval_required":true,"executable":false},"claims_approved":false,"claims_executed":false},
+  {"case_id":"healthy-listing-pause","sku_id":"SKU-HEALTHY","site":"US","disposition":"no_action","evidence":["no_measured_risk"],"action":null,"claims_approved":false,"claims_executed":false}
+]

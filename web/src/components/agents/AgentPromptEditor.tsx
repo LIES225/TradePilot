@@ -95,12 +95,12 @@ export function AgentPromptEditor({
             <PromptModeOption
               checked={mode === 'replace'}
               title="完全替换"
-              description="仅使用下面四部分和 Miniclaw 必需的运行指令。"
+              description="仅使用下面四部分和 TradePilot 必需的运行指令。"
               onSelect={() => onModeChange('replace')}
             />
           </div>
           <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            主动模式始终使用智能体配置与 Miniclaw
+            主动模式始终使用智能体配置与 TradePilot
             运行规则组成的独立系统提示词，不继承 Assistant 导向的 Claude Code
             默认提示词；此选项仅影响 Assistant 模式。
           </p>
@@ -190,8 +190,8 @@ export function AgentPromptEditor({
             <DialogTitle>四段自定义提示词预览</DialogTitle>
             <DialogDescription>
               {mode === 'append'
-                ? '以下内容会追加到 Claude Code 默认提示词之后。预览不包含 Claude Code 默认层及 Miniclaw 强制注入的安全、运行时和渠道规则。'
-                : '以下内容会替换 Claude Code 默认提示词。预览不包含 Miniclaw 强制注入的安全、运行时和渠道规则。'}
+                ? '以下内容会追加到 Claude Code 默认提示词之后。预览不包含 Claude Code 默认层及 TradePilot 强制注入的安全、运行时和渠道规则。'
+                : '以下内容会替换 Claude Code 默认提示词。预览不包含 TradePilot 强制注入的安全、运行时和渠道规则。'}
             </DialogDescription>
           </DialogHeader>
           <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap rounded-lg border bg-muted/20 p-4 text-xs leading-6 text-foreground">

@@ -65,7 +65,7 @@ export function SkillsPage() {
         <div className="bg-background border-b border-border px-6 py-4">
           <PageHeader
             title="Skills"
-            subtitle={`我的 ${skills.filter((item) => item.source === 'user').length} · Miniclaw 内置 ${skills.filter((item) => item.source === 'project').length} · 宿主机 ${skills.filter((item) => item.source === 'external').length} · 启用 ${enabledCount}`}
+            subtitle={`我的 ${skills.filter((item) => item.source === 'user').length} · TradePilot 内置 ${skills.filter((item) => item.source === 'project').length} · 宿主机 ${skills.filter((item) => item.source === 'external').length} · 启用 ${enabledCount}`}
             actions={
               <div className="flex items-center gap-3">
                 <Button
@@ -89,7 +89,7 @@ export function SkillsPage() {
         </div>
 
         <div className="mx-6 mt-4 rounded-lg bg-muted px-4 py-3 text-xs leading-5 text-muted-foreground">
-          “我的 Skills”可安装和管理；Miniclaw 内置与宿主机 Skills 只读。智能体
+          “我的 Skills”可安装和管理；TradePilot 内置与宿主机 Skills 只读。智能体
           可以独立选择不使用、使用部分或使用全部宿主机
           Skills，不必同时继承宿主机 Prompt 或
           Rules。不同来源的同名项会并列显示。
@@ -113,7 +113,7 @@ export function SkillsPage() {
                   [
                     ['all', '全部'],
                     ['user', '我的'],
-                    ['project', 'Miniclaw 内置'],
+                    ['project', 'TradePilot 内置'],
                     ['external', '宿主机'],
                   ] as const
                 ).map(([value, label]) => (
@@ -210,7 +210,7 @@ export function SkillsPage() {
                   {projectSkills.length > 0 && (
                     <div>
                       <h2 className="text-sm font-semibold text-muted-foreground mb-3">
-                        Miniclaw 内置 ({projectSkills.length})
+                        TradePilot 内置 ({projectSkills.length})
                       </h2>
                       <div className="space-y-2">
                         {projectSkills.map((skill) => (

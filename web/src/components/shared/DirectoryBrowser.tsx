@@ -90,7 +90,7 @@ export function DirectoryBrowser({
         ) {
           setDirectories([]);
           setError(
-            '宿主机目录挂载尚未配置。请先配置挂载目录白名单并重启 Miniclaw。',
+            '宿主机目录挂载尚未配置。请先配置挂载目录白名单并重启 TradePilot。',
           );
           return;
         }

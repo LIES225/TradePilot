@@ -2,7 +2,7 @@
   "name": "miniclaw-desktop",
   "version": "1.0.0",
   "private": true,
-  "description": "Electron Desktop Shell for Miniclaw",
+  "description": "Electron Desktop Shell for TradePilot",
   "main": "dist/main.cjs",
   "author": "helson",
   "license": "MIT",

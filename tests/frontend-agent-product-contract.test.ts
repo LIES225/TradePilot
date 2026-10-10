@@ -53,9 +53,10 @@ describe('Agent-first frontend product contracts', () => {
     });
   });
 
-  it('shows the legacy built-in Agent name as Miniclaw', () => {
-    expect(getAgentProfileDisplayName('Default Agent')).toBe('Miniclaw');
-    expect(getAgentProfileDisplayName(undefined)).toBe('Miniclaw');
+  it('shows legacy built-in Agent names as TradePilot', () => {
+    expect(getAgentProfileDisplayName('Default Agent')).toBe('TradePilot');
+    expect(getAgentProfileDisplayName('Miniclaw')).toBe('TradePilot');
+    expect(getAgentProfileDisplayName(undefined)).toBe('TradePilot');
     expect(getAgentProfileDisplayName('代码审查员')).toBe('代码审查员');
   });
 
@@ -135,7 +136,7 @@ describe('Agent-first frontend product contracts', () => {
     ]);
   });
 
-  it('keeps the default Miniclaw Agent first and retains its internal home context', () => {
+  it('keeps the default TradePilot Agent first and retains its internal home context', () => {
     const home = workspace('web:main', 'agent-miniclaw', 'Miniclaw');
     home.is_my_home = true;
 
@@ -149,7 +150,7 @@ describe('Agent-first frontend product contracts', () => {
     );
 
     expect(sections.map((section) => section.name)).toEqual([
-      'Miniclaw',
+      'TradePilot',
       '代码审查员',
     ]);
     expect(sections[0]).toMatchObject({
@@ -186,12 +187,12 @@ describe('Agent-first frontend product contracts', () => {
         name,
       })),
     ).toEqual([
-      { jid: 'web:main', name: 'Miniclaw' },
+      { jid: 'web:main', name: 'TradePilot' },
       { jid: 'web:project', name: 'web:project' },
     ]);
   });
 
-  it('separates Miniclaw as the primary Agent from custom Agents', () => {
+  it('separates TradePilot as the primary Agent from custom Agents', () => {
     const sections = groupWorkspacesByAgent(
       [
         workspace('web:main', 'agent-miniclaw', 'Miniclaw'),
@@ -201,13 +202,13 @@ describe('Agent-first frontend product contracts', () => {
     );
 
     const partitioned = partitionAgentWorkspaceSections(sections);
-    expect(partitioned.primary?.name).toBe('Miniclaw');
+    expect(partitioned.primary?.name).toBe('TradePilot');
     expect(partitioned.custom.map((section) => section.name)).toEqual([
       '代码审查员',
     ]);
   });
 
-  it('keeps the primary Miniclaw Agent fixed open while custom Agents remain collapsible', () => {
+  it('keeps the primary TradePilot Agent fixed open while custom Agents remain collapsible', () => {
     expect(isAgentSectionCollapsible({ isDefault: true })).toBe(false);
     expect(isAgentSectionCollapsible({ isDefault: false })).toBe(true);
   });

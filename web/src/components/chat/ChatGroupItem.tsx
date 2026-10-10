@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { MoreHorizontal, Pencil, Trash2, RotateCcw, Pin } from 'lucide-react';
 import {
   DropdownMenu,
@@ -27,10 +28,11 @@ export interface ChatGroupItemProps {
   onTogglePin?: (jid: string) => void;
 }
 
-export function ChatGroupItem({
+function ChatGroupItemComponent({
   jid,
   name,
   folder,
+  lastMessage,
   isActive,
   isHome,
   isPinned,
@@ -48,31 +50,45 @@ export function ChatGroupItem({
   const isDefaultName =
     !name || name === 'Main' || name === `${currentUser?.username} Home`;
   const displayName = isHome && isDefaultName ? defaultHomeName : name;
+  const messagePreview = lastMessage?.replace(/\s+/g, ' ').trim();
   return (
     <div
       className={cn(
-        'group relative mb-0.5 rounded-md transition-colors',
+        'group relative mb-1 rounded-xl border border-transparent transition-[background-color,border-color,box-shadow]',
         isActive
-          ? 'bg-accent/80 text-foreground'
-          : 'text-foreground hover:bg-accent/45',
+          ? 'border-primary/15 bg-primary/8 text-foreground shadow-sm dark:bg-primary/10'
+          : 'text-foreground hover:border-border/80 hover:bg-accent/55',
       )}
     >
       <button
         onClick={() => onSelect(jid, folder)}
         aria-current={isActive ? 'page' : undefined}
-        className="flex min-h-11 w-full items-center px-2.5 pr-10 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+        className="flex min-h-[3.5rem] w-full items-center gap-2.5 rounded-xl px-3 pr-10 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
       >
-        <span className="min-w-0 flex-1 truncate text-[14px] font-normal leading-5">
-          {displayName}
-        </span>
-        {isPinned && !isHome && (
-          <span className="ml-1 shrink-0 text-[10px] text-muted-foreground">
-            固定
+        <span
+          className={cn(
+            'h-2 w-2 shrink-0 rounded-full',
+            isRunning
+              ? 'bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.13)]'
+              : isActive
+                ? 'bg-primary'
+                : 'bg-border',
+          )}
+          aria-hidden="true"
+        />
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-1.5">
+            <span className="min-w-0 flex-1 truncate text-[13px] font-medium leading-5">
+              {displayName}
+            </span>
+            {isPinned && !isHome && (
+              <Pin className="h-3 w-3 shrink-0 text-muted-foreground" />
+            )}
           </span>
-        )}
-        {isRunning && (
-          <span className="ml-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-        )}
+          <span className="mt-0.5 block truncate text-[11px] leading-4 text-muted-foreground">
+            {messagePreview || (isRunning ? '正在处理请求…' : '暂无消息')}
+          </span>
+        </span>
       </button>
 
       {/* Dropdown menu */}
@@ -130,3 +146,21 @@ export function ChatGroupItem({
     </div>
   );
 }
+
+// Parent layout state (for example, another workspace entering a running
+// state) should not repaint every row in a long conversation list. Actions
+// are stable store/navigation callbacks; render only when this row's visible
+// data changes.
+export const ChatGroupItem = memo(
+  ChatGroupItemComponent,
+  (previous, next) =>
+    previous.jid === next.jid &&
+    previous.name === next.name &&
+    previous.folder === next.folder &&
+    previous.lastMessage === next.lastMessage &&
+    previous.isActive === next.isActive &&
+    previous.isHome === next.isHome &&
+    previous.isPinned === next.isPinned &&
+    previous.isRunning === next.isRunning &&
+    previous.canModify === next.canModify,
+);

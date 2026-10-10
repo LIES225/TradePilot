@@ -52,7 +52,7 @@ export function SetupChannelsPage() {
             type="button"
             onClick={() => navigate('/chat', { replace: true })}
           >
-            完成并进入 Miniclaw
+            完成并进入 TradePilot
             <ArrowRight className="size-4" />
           </Button>
         </footer>

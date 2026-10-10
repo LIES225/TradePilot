@@ -90,6 +90,10 @@ export function showToast(
  */
 export function notifyIfHidden(title: string, body?: string): void {
   if (!document.hidden) return;
+  if (window.miniclawDesktop) {
+    void window.miniclawDesktop.showNotification({ title, body });
+    return;
+  }
   if (typeof Notification === 'undefined') return;
   if (Notification.permission === 'granted') {
     new Notification(title, { body });

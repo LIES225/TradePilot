@@ -124,7 +124,7 @@ export function AppLayout() {
   );
   const appearance = useAuthStore((s) => s.appearance);
   useEffect(() => {
-    const appName = appearance?.appName || 'Miniclaw';
+    const appName = appearance?.appName || 'TradePilot';
     document.title = totalUnread > 0 ? `(${totalUnread}) ${appName}` : appName;
   }, [totalUnread, appearance?.appName]);
 

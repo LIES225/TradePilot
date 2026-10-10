@@ -1,0 +1,4 @@
+sku_id,site,start_date,end_date,discount_type,discount_value,currency
+SKU-LOW,US,2026-09-01,2026-09-05,percentage,10,USD
+SKU-LOW,US,2026-09-03,2026-09-07,fixed,2,USD
+SKU-HEALTHY,US,2026-09-01,2026-09-07,percentage,5,USD

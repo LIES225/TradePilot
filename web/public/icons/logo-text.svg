@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="380" height="72" viewBox="0 0 380 72" role="img" aria-labelledby="title desc">
-  <title id="title">Miniclaw</title>
-  <desc id="desc">Miniclaw application logo</desc>
+  <title id="title">TradePilot</title>
+  <desc id="desc">TradePilot application logo</desc>
   <defs>
     <clipPath id="icon-clip">
       <rect x="0" y="0" width="72" height="72" rx="18" />
@@ -17,5 +17,5 @@
     font-size="42"
     font-weight="700"
     letter-spacing="-1.2"
-  >Miniclaw</text>
+  >TradePilot</text>
 </svg>

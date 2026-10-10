@@ -130,6 +130,7 @@ import {
   type AssistantUsageBatch,
 } from './assistant-usage.js';
 import { buildMiniclawPromptPlan, type PromptPlan } from './prompt-plan.js';
+import { ECOMMERCE_SOP, hasEcommerceDataset } from './ecommerce-tools.js';
 import { withMiniclawSubagentContract } from './sdk-compat.js';
 import { assessContextBudget } from './context-budget.js';
 import {
@@ -2430,6 +2431,11 @@ async function runQueryAttempt(
     ),
     interaction: INTERACTION_GUIDELINES,
     security: buildSecurityRulesPrompt(),
+    ecommerceSop: hasEcommerceDataset(
+      path.join(WORKSPACE_GROUP, 'ecommerce-data'),
+    )
+      ? ECOMMERCE_SOP
+      : undefined,
     ...(workspaceMemoryInstructions && hasMemoryTools
       ? {
           memory: {
@@ -2473,6 +2479,7 @@ async function runQueryAttempt(
   if (promptPlan.errors.length > 0) {
     throw new Error(`prompt_plan_invalid: ${promptPlan.errors.join('; ')}`);
   }
+  if (mcpToolsContext) mcpToolsContext.promptPlanHash = promptPlan.hash;
   const systemPromptAppend = promptPlan.text;
   const systemPrompt = includeClaudePreset
     ? {

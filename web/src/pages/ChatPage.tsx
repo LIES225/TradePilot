@@ -257,7 +257,7 @@ export function ChatPage() {
           <div className="flex items-center gap-3 px-4 pt-5 pb-3">
             <img
               src={`${import.meta.env.BASE_URL}icons/logo-text.svg`}
-              alt={appearance?.appName || 'Miniclaw'}
+              alt={appearance?.appName || 'TradePilot'}
               className="h-8"
             />
             <div className="flex-1" />
@@ -346,7 +346,7 @@ export function ChatPage() {
             <div className="flex flex-col items-center justify-center h-64 px-4">
               <img
                 src={`${import.meta.env.BASE_URL}icons/logo-text.svg`}
-                alt={appearance?.appName || 'Miniclaw'}
+                alt={appearance?.appName || 'TradePilot'}
                 className="h-12 mb-6"
               />
               <p className="text-muted-foreground text-sm">暂无智能体工作区</p>
@@ -370,12 +370,12 @@ export function ChatPage() {
             <div className="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-6">
               <img
                 src={`${import.meta.env.BASE_URL}icons/icon-192.png`}
-                alt="Miniclaw"
+                alt="TradePilot"
                 className="w-full h-full object-cover"
               />
             </div>
             <h2 className="text-xl font-semibold text-foreground mb-2">
-              欢迎使用 {appearance?.appName || 'Miniclaw'}
+              欢迎使用 {appearance?.appName || 'TradePilot'}
             </h2>
             <p className="text-muted-foreground text-sm">
               从左侧选择一个工作区开始对话
@@ -388,7 +388,7 @@ export function ChatPage() {
         onClose={closeClear}
         onConfirm={handleClearConfirm}
         title="重建工作区"
-        message={`确认重建工作区「${clearState.name}」吗？这会永久删除全部聊天记录、上下文、所有子对话及其消息、工作目录文件，以及该工作区的全部 Memory（含版本历史、遗忘记录和 Miniclaw 称呼偏好）；Home 还会重置首次唤醒状态。关联定时任务会停止并移入回收站，运行历史保留；持久化目录 (data/extra/) 保留。此操作不可撤销。`}
+        message={`确认重建工作区「${clearState.name}」吗？这会永久删除全部聊天记录、上下文、所有子对话及其消息、工作目录文件，以及该工作区的全部 Memory（含版本历史、遗忘记录和 TradePilot 称呼偏好）；Home 还会重置首次唤醒状态。关联定时任务会停止并移入回收站，运行历史保留；持久化目录 (data/extra/) 保留。此操作不可撤销。`}
         confirmText="确认重建"
         cancelText="取消"
         confirmVariant="danger"

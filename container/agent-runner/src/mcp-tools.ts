@@ -22,6 +22,10 @@ import {
   defineMcpTool as tool,
   type McpToolDefinition,
 } from './mcp-tool-types.js';
+import {
+  createEcommerceTools,
+  hasEcommerceDataset,
+} from './ecommerce-tools.js';
 
 /** Context required by MCP tools. Passed at construction time. */
 export interface McpContext {
@@ -48,6 +52,8 @@ export interface McpContext {
   currentInputTurnId?: string | null;
   /** Current provider session id, used only as server-side provenance. */
   currentSessionId?: string | null;
+  /** Hash of the PromptPlan used for this turn, without prompt contents. */
+  promptPlanHash?: string | null;
   /** Runner-private HMAC material. Never expose through a tool schema/result. */
   workspaceMemoryMutationAuth?: {
     runnerInstanceId: string;
@@ -2810,6 +2816,18 @@ Use the skills panel in the UI to find the skill ID (directory name, e.g. "memor
             ),
           }),
       ),
+    );
+  }
+
+  const ecommerceDataDir = path.join(ctx.workspaceGroup, 'ecommerce-data');
+  if (hasEcommerceDataset(ecommerceDataDir)) {
+    tools.push(
+      ...createEcommerceTools({
+        dataDir: ecommerceDataDir,
+        getPromptPlanHash: () => ctx.promptPlanHash,
+        getInputTurnId: () => ctx.currentInputTurnId,
+        getSessionId: () => ctx.currentSessionId,
+      }),
     );
   }
 

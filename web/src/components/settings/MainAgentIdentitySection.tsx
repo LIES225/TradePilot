@@ -45,7 +45,7 @@ export function MainAgentIdentitySection() {
       await fetchAppearance();
       setMode('emoji');
       setStyleEditorOpen(true);
-      toast.success('主 Miniclaw 头像已保存');
+      toast.success('主 TradePilot 头像已保存');
     } catch (error) {
       toast.error(getErrorMessage(error, '保存头像失败'));
     } finally {
@@ -77,7 +77,7 @@ export function MainAgentIdentitySection() {
       await fetchAppearance();
       setMode('emoji');
       setStyleEditorOpen(true);
-      toast.success('主 Miniclaw 头像已更新');
+      toast.success('主 TradePilot 头像已更新');
     } catch (error) {
       toast.error(getErrorMessage(error, '上传头像失败'));
     } finally {
@@ -95,7 +95,7 @@ export function MainAgentIdentitySection() {
       setMode('brand');
       setStyleEditorOpen(false);
       await fetchAppearance();
-      toast.success('已恢复 Miniclaw 默认头像');
+      toast.success('已恢复 TradePilot 默认头像');
     } catch (error) {
       toast.error(getErrorMessage(error, '恢复默认头像失败'));
     }
@@ -117,7 +117,7 @@ export function MainAgentIdentitySection() {
       <div>
         <h3 className="text-sm font-semibold text-foreground">头像</h3>
         <p className="mt-1 text-xs leading-5 text-muted-foreground">
-          这是全局主 Miniclaw 的头像。未单独设置头像的自定义智能体
+          这是全局主 TradePilot 的头像。未单独设置头像的自定义智能体
           会自动继承它。
         </p>
       </div>

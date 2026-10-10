@@ -405,7 +405,7 @@ export function ChatView({ groupJid, onBack, headerLeft }: ChatViewProps) {
   const agentProfileLabel = group?.agent_profile_name
     ? getAgentProfileDisplayName(group.agent_profile_name)
     : group?.is_home
-      ? 'Miniclaw'
+      ? 'TradePilot'
       : '智能体';
   const workspaceDisplayName = group?.is_my_home
     ? agentProfileLabel
@@ -1119,7 +1119,7 @@ export function ChatView({ groupJid, onBack, headerLeft }: ChatViewProps) {
               <Link className="w-4 h-4 flex-shrink-0" />
               <span className="flex-1 min-w-0">
                 未配置消息渠道（飞书 / Telegram / Discord / QQ / 微信 / 钉钉 /
-                WhatsApp），消息无法与 Miniclaw 的直接对话互通
+                WhatsApp），消息无法与 TradePilot 的直接对话互通
               </span>
               <button
                 onClick={() => navigate('/setup/channels')}

@@ -103,7 +103,7 @@ export function EffectiveCapabilitiesPreview({
             最终生效能力
           </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            按来源展示 Miniclaw、宿主机和工作区能力，并标出同名来源冲突。
+            按来源展示 TradePilot、宿主机和工作区能力，并标出同名来源冲突。
             系统内置能力始终生效，不进入用户选择器。
           </p>
         </div>
@@ -154,7 +154,7 @@ export function EffectiveCapabilitiesPreview({
               <Badge variant="secondary">
                 {preview.context.source === 'host_claude'
                   ? '宿主机 ~/.claude'
-                  : 'Miniclaw 管理'}
+                  : 'TradePilot 管理'}
               </Badge>
               {preview.context.source === 'host_claude' && (
                 <span className="text-xs text-muted-foreground">
@@ -167,7 +167,7 @@ export function EffectiveCapabilitiesPreview({
               )}
             </PreviewRow>
             <CapabilityEntriesRow
-              label="Miniclaw Skills"
+              label="TradePilot Skills"
               entries={preview.skills.entries.filter(
                 (entry) =>
                   entry.source !== 'host' && entry.source !== 'workspace',

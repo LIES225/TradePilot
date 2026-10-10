@@ -1,4 +1,4 @@
-const DEFAULT_AGENT_NAME = 'Miniclaw';
+const DEFAULT_AGENT_NAME = 'TradePilot';
 
 export interface AgentDisplayIdentity {
   name: string;
@@ -21,7 +21,7 @@ export interface AgentIdentityOptions {
 
 /**
  * Resolve a chat identity from the active Agent. A custom Agent only replaces
- * the global Miniclaw avatar when it owns at least one avatar field.
+ * the global TradePilot avatar when it owns at least one avatar field.
  */
 export function resolveAgentDisplayIdentity({
   agentName,
@@ -33,8 +33,11 @@ export function resolveAgentDisplayIdentity({
   mainAvatarEmoji,
   mainAvatarColor,
 }: AgentIdentityOptions = {}): AgentDisplayIdentity {
+  const rawName = agentName?.trim() || messageSenderName?.trim();
   const name =
-    agentName?.trim() || messageSenderName?.trim() || DEFAULT_AGENT_NAME;
+    !rawName || rawName === 'Miniclaw' || rawName === 'Default Agent'
+      ? DEFAULT_AGENT_NAME
+      : rawName;
   const hasProfileOverride = !!(avatarUrl || avatarEmoji || avatarColor);
   const imageUrl = hasProfileOverride
     ? avatarUrl || undefined

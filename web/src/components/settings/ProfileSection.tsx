@@ -100,7 +100,7 @@ export function ProfileSection() {
       <Section
         icon={User}
         title="个人资料"
-        desc="用于标识当前登录用户，不会改变 Miniclaw 或自定义智能体的名称"
+        desc="用于标识当前登录用户，不会改变 TradePilot 或自定义智能体的名称"
       >
         <div className="flex items-center gap-4">
           <EmojiAvatar
