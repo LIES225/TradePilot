@@ -1,6 +1,6 @@
 # TradePilot
 
-TradePilot 是基于 [MiniClaw](https://github.com/helsome/miniclaw) 的跨境电商经营决策 Agent 本地原型。本仓库保留 MiniClaw 的 Agent Runtime、工作区、多渠道与能力管理基座，并增加经营数据调查、动作草案、人工审批和确定性回归用例。基座来源及原始说明见 [MiniClaw README](docs/UPSTREAM_MINICLAW_README.md)；原始版权与 MIT 许可见 [LICENSE](LICENSE)。
+TradePilot 是一个跨境电商经营决策 Agent 本地原型。它通过商品、销售、库存、广告、促销和成本数据调查经营问题，生成带证据的动作草案，并将业务操作交由人工审批。当前仓库提供可复现的本地数据样例、调查工具和确定性回归用例。
 
 ## 当前可运行范围
 
@@ -13,7 +13,7 @@ TradePilot 是基于 [MiniClaw](https://github.com/helsome/miniclaw) 的跨境�
 
 ## 快速复现
 
-按照上游 [MiniClaw README](docs/UPSTREAM_MINICLAW_README.md) 配置 Node.js 环境并安装依赖后，在仓库根目录运行：
+使用 Node.js 20 或更高版本，在仓库根目录运行 `npm install`，然后执行：
 
 ```bash
 npm run ecommerce:cli -- status --data-dir examples/ecommerce-data
@@ -35,4 +35,4 @@ npm run ecommerce:eval
 
 ## 来源与许可
 
-本项目基于 MiniClaw 的 2026-08-18 快照（提交 `3ff1c8d6a0707f4a9f0957ff411758e5e141583a`）扩展。MiniClaw 原作者和贡献者保留其原有版权；本仓库的新增与修改部分请通过相对该提交的 diff 查看。仓库继续保留原 MIT 许可证。项目中的示例数据为合成样例，不应替换为真实客户资料后公开提交。
+TradePilot 的 Agent 工作台基座来自 MiniClaw 的 2026-08-18 快照（提交 `3ff1c8d6a0707f4a9f0957ff411758e5e141583a`）；原仓库地址当前无法公开访问。保留的[原始说明副本](docs/UPSTREAM_MINICLAW_README.md)和 [MIT 许可证](LICENSE)记录了基座来源与原作者版权。TradePilot 新增的电商场景实现可通过本仓库的两个提交对比查看。项目中的示例数据为合成样例，不应替换为真实客户资料后公开提交。

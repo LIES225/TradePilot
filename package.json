@@ -83,11 +83,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/helsome/miniclaw.git"
+    "url": "git+https://github.com/LIES225/TradePilot.git"
   },
-  "homepage": "https://github.com/helsome/miniclaw#readme",
+  "homepage": "https://github.com/LIES225/TradePilot#readme",
   "bugs": {
-    "url": "https://github.com/helsome/miniclaw/issues"
+    "url": "https://github.com/LIES225/TradePilot/issues"
   },
   "author": "helson",
   "keywords": [
