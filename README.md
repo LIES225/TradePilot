@@ -25,13 +25,13 @@ npm run ecommerce:eval
 
 ## 代码导航
 
-| 范围 | 入口 |
-|---|---|
-| 本地数据适配、调查、策略和工具 | `container/agent-runner/src/ecommerce-tools.ts` |
-| Agent 工具装配与 PromptPlan | `container/agent-runner/src/mcp-tools.ts`、`container/agent-runner/src/prompt-plan.ts` |
-| 审批记录与接口 | `src/ecommerce-approval-store.ts`、`src/routes/workspaces.ts` |
-| 经营审批页面 | `web/src/pages/TradePilotPage.tsx` |
-| 回归用例 | `scripts/ecommerce-eval-core.ts`、`tests/ecommerce-tools.test.ts` |
+| 范围                           | 入口                                                                                   |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| 本地数据适配、调查、策略和工具 | `container/agent-runner/src/ecommerce-tools.ts`                                        |
+| Agent 工具装配与 PromptPlan    | `container/agent-runner/src/mcp-tools.ts`、`container/agent-runner/src/prompt-plan.ts` |
+| 审批记录与接口                 | `src/ecommerce-approval-store.ts`、`src/routes/workspaces.ts`                          |
+| 经营审批页面                   | `web/src/pages/TradePilotPage.tsx`                                                     |
+| 回归用例                       | `scripts/ecommerce-eval-core.ts`、`tests/ecommerce-tools.test.ts`                      |
 
 ## 来源与许可
 

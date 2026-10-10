@@ -28,6 +28,7 @@ function repositoryMarkdownFiles() {
   )
     .split('\0')
     .filter(Boolean)
+    .filter((file) => file !== 'docs/UPSTREAM_MINICLAW_README.md')
     .filter((file) => fs.existsSync(path.join(root, file)));
 }
 
