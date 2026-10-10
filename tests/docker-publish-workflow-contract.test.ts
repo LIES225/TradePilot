@@ -9,7 +9,8 @@ describe('Docker image distribution contract', () => {
   test('builds and smokes on pinned native runners before promoting latest', () => {
     const workflow = read('.github/workflows/docker-publish.yml');
 
-    expect(workflow).toContain('branches: [main]');
+    expect(workflow).toContain('workflow_dispatch:');
+    expect(workflow).not.toContain('branches: [main]');
     expect(workflow).toContain('platform: linux/amd64');
     expect(workflow).toContain('platform: linux/arm64');
     expect(workflow).toContain('runner: ubuntu-24.04');
@@ -62,9 +63,7 @@ describe('Docker image distribution contract', () => {
   });
 
   test('builds only in GitHub Actions and pulls published images at runtime', () => {
-    expect(read('src/config.ts')).toContain(
-      "'helsome/miniclaw-agent:latest'",
-    );
+    expect(read('src/config.ts')).toContain("'helsome/miniclaw-agent:latest'");
     const makefile = read('Makefile');
     expect(makefile).toContain(
       'CONTAINER_IMAGE ?= helsome/miniclaw-agent:latest',

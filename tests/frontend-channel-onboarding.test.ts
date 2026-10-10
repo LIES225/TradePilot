@@ -19,7 +19,7 @@ describe('channel onboarding frontend protocol contract', () => {
       'web/src/components/settings/channel-accounts/ProviderConnectionFields.tsx',
     );
     const definitions = read('web/src/utils/channel-accounts.ts');
-    expect(fields).toContain('扫码结果由 Miniclaw 安全保存');
+    expect(fields).toContain('扫码结果由 TradePilot 安全保存');
     expect(fields).toContain('无需填写手机号或账号标识');
     expect(definitions).not.toMatch(
       /key:\s*['"](?:ilinkBotId|baseUrl|cdnBaseUrl|accountId|phoneNumber)['"]/,

@@ -100,7 +100,7 @@ describe('Agent prompt and capability frontend contract', () => {
     );
 
     expect(profiles).toMatch(
-      /Miniclaw MCP[\s\S]*宿主机 Skills[\s\S]*“能力配置”独立控制/,
+      /TradePilot MCP[\s\S]*宿主机 Skills[\s\S]*“能力配置”独立控制/,
     );
     expect(profiles).toContain("skill.source === 'external' && skill.enabled");
     expect(skillEditor).toMatch(/不使用[\s\S]*选择部分[\s\S]*全部使用/);
@@ -178,7 +178,7 @@ describe('Agent prompt and capability frontend contract', () => {
     const card = read('web/src/components/skills/SkillCard.tsx');
     const store = read('web/src/stores/skills.ts');
 
-    expect(page).toMatch(/我的 Skills[\s\S]*Miniclaw 内置[\s\S]*宿主机/);
+    expect(page).toMatch(/我的 Skills[\s\S]*TradePilot 内置[\s\S]*宿主机/);
     expect(page).toContain('skill.sourceKey');
     expect(card).toContain('isReadonlySkill(skill)');
     expect(card).toContain('skillConflictLabel');
@@ -197,12 +197,12 @@ describe('Agent prompt and capability frontend contract', () => {
     }
   });
 
-  test('lets the main Miniclaw read and persist its reasoning effort', () => {
+  test('lets the main TradePilot agent read and persist its reasoning effort', () => {
     const main = read(
       'web/src/components/settings/MainAgentCapabilitiesSection.tsx',
     );
 
-    expect(main).toContain('aria-label="主 Miniclaw 推理努力档位"');
+    expect(main).toContain('aria-label="主 TradePilot 推理努力档位"');
     expect(main).toContain(
       "setEffort(profile.runtime_policy.reasoning?.effort ?? 'inherit')",
     );

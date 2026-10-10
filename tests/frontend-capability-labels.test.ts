@@ -61,7 +61,7 @@ describe('frontend capability source semantics', () => {
     });
 
     expect(effectiveSkillSource(disabledManaged)).toBe('project');
-    expect(skillConflictLabel(disabledManaged)).toBe('被Miniclaw 内置覆盖');
+    expect(skillConflictLabel(disabledManaged)).toBe('被TradePilot 内置覆盖');
     expect(skillConflictLabel(disabledManaged)).not.toContain('当前生效');
   });
 });
